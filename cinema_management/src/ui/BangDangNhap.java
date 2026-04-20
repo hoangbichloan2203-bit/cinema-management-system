@@ -5,21 +5,18 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-import services.AuthService;
-
-public class LoginPanel extends JPanel {
+/**
+ * Giao diện Đăng Nhập
+ */
+public class BangDangNhap extends JPanel {
     
     private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginButton;
     private JButton registerButton;
     private JLabel errorLabel;
-    private AuthService authService;
-    private MainFrame parentFrame;
     
-    public LoginPanel(MainFrame parentFrame) {
-        this.parentFrame = parentFrame;
-        this.authService = new AuthService();
+    public BangDangNhap() {
         setLayout(new BorderLayout());
         setBackground(new Color(31, 32, 44));
         
@@ -97,7 +94,6 @@ public class LoginPanel extends JPanel {
         registerButton.setForeground(Color.WHITE);
         registerButton.setPreferredSize(new Dimension(150, 45));
         registerButton.setFocusPainted(false);
-        registerButton.addActionListener(e -> parentFrame.showRegisterPanel());
         
         buttonPanel.add(loginButton);
         buttonPanel.add(registerButton);
@@ -116,13 +112,9 @@ public class LoginPanel extends JPanel {
             return;
         }
         
-        if (authService.login(email, password)) {
-            errorLabel.setText("");
-            emailField.setText("");
-            passwordField.setText("");
-            parentFrame.showCustomerDashboard();
-        } else {
-            errorLabel.setText("Email hoặc mật khẩu không đúng");
-        }
+        // TODO: Gọi AuthService để xác thực
+        errorLabel.setText("");
+        emailField.setText("");
+        passwordField.setText("");
     }
 }

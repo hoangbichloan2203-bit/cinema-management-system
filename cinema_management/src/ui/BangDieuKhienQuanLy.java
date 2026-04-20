@@ -6,12 +6,12 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class AdminDashboardPanel extends JPanel {
+/**
+ * Giao diện Điều Khiển Quản Lý (Admin Dashboard)
+ */
+public class BangDieuKhienQuanLy extends JPanel {
     
-    private MainFrameNew parentFrame;
-    
-    public AdminDashboardPanel(MainFrameNew parentFrame) {
-        this.parentFrame = parentFrame;
+    public BangDieuKhienQuanLy() {
         setLayout(new BorderLayout());
         setBackground(new Color(31, 32, 44));
         

@@ -1,6 +1,5 @@
 package ui;
 
-import dao.GheDAO;
 import entity.Ghe;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -10,19 +9,19 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Giao diện Chọn Ghế
+ */
 public class BangChonGhe extends JPanel {
     
-    private int theaterId;
-    private GheDAO GheDAO;
-    private List<Seat> allSeats;
-    private List<Integer> selectedSeatIds;
+    private String maPhong;
+    private List<String> selectedSeatIds;
     private List<SeatButton> seatButtons;
     
     private double totalPrice = 0;
     
-    public BangChonGhe(int theaterId) {
-        this.theaterId = theaterId;
-        this.GheDAO = new GheDAO();
+    public BangChonGhe(String maPhong) {
+        this.maPhong = maPhong;
         this.selectedSeatIds = new ArrayList<>();
         this.seatButtons = new ArrayList<>();
         
@@ -32,8 +31,6 @@ public class BangChonGhe extends JPanel {
         add(createHeaderPanel(), BorderLayout.NORTH);
         add(createSeatMapPanel(), BorderLayout.CENTER);
         add(createBottomPanel(), BorderLayout.SOUTH);
-        
-        loadSeats();
     }
     
     private JPanel createHeaderPanel() {
@@ -86,22 +83,20 @@ public class BangChonGhe extends JPanel {
             rowPanel.add(rowLabel);
             
             for (int i = 1; i <= 10; i++) {
-                Seat seat = findSeatByRowAndNumber(row, i);
-                SeatButton seatBtn = new SeatButton(seat);
+                String seatId = row + i;
+                SeatButton seatBtn = new SeatButton(seatId);
                 seatBtn.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        if (seat.getStatus().equals("AVAILABLE")) {
-                            seatBtn.toggleSelection();
-                            if (seatBtn.isSelected()) {
-                                selectedSeatIds.add(seat.getSeatId());
-                                totalPrice += seat.getPrice();
-                            } else {
-                                selectedSeatIds.remove(Integer.valueOf(seat.getSeatId()));
-                                totalPrice -= seat.getPrice();
-                            }
-                            updatePriceLabel();
+                        seatBtn.toggleSelection();
+                        if (seatBtn.isSelected()) {
+                            selectedSeatIds.add(seatId);
+                            totalPrice += 80000; // TODO: Lấy giá từ database
+                        } else {
+                            selectedSeatIds.remove(seatId);
+                            totalPrice -= 80000;
                         }
+                        updatePriceLabel();
                     }
                 });
                 seatButtons.add(seatBtn);
@@ -166,20 +161,7 @@ public class BangChonGhe extends JPanel {
         repaint();
     }
     
-    private void loadSeats() {
-        allSeats = seatDAO.getSeatsByTheaterId(theaterId);
-    }
-    
-    private Seat findSeatByRowAndNumber(String row, int number) {
-        for (Seat seat : allSeats) {
-            if (seat.getSeatRow().equals(row) && seat.getSeatNumber() == number) {
-                return seat;
-            }
-        }
-        return new Seat(0, theaterId, row, number, "STANDARD", 80000, "AVAILABLE");
-    }
-    
-    public List<Integer> getSelectedSeatIds() {
+    public List<String> getSelectedSeatIds() {
         return selectedSeatIds;
     }
     
@@ -189,12 +171,12 @@ public class BangChonGhe extends JPanel {
     
     // Inner class cho nút ghế
     private class SeatButton extends JButton {
-        private Seat seat;
+        private String seatId;
         private boolean selected = false;
         
-        public SeatButton(Seat seat) {
-            this.seat = seat;
-            setText(seat.getSeatRow() + seat.getSeatNumber());
+        public SeatButton(String seatId) {
+            this.seatId = seatId;
+            setText(seatId);
             setFont(new Font("Segoe UI", Font.BOLD, 11));
             setPreferredSize(new Dimension(35, 35));
             setFocusPainted(false);
@@ -211,11 +193,7 @@ public class BangChonGhe extends JPanel {
         }
         
         private void updateColor() {
-            if (seat.getStatus().equals("BOOKED")) {
-                setBackground(new Color(200, 50, 50));
-                setForeground(Color.WHITE);
-                setEnabled(false);
-            } else if (selected) {
+            if (selected) {
                 setBackground(new Color(241, 121, 104));
                 setForeground(Color.WHITE);
                 setEnabled(true);
