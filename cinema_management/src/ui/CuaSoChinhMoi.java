@@ -50,7 +50,7 @@ public class CuaSoChinhMoi extends JFrame {
         getContentPane().removeAll();
         setLayout(new BorderLayout());
         
-        bangDangNhap = new BangDangNhap();
+        bangDangNhap = new BangDangNhap(this);
         add(bangDangNhap, BorderLayout.CENTER);
         
         revalidate();
@@ -64,7 +64,7 @@ public class CuaSoChinhMoi extends JFrame {
         getContentPane().removeAll();
         setLayout(new BorderLayout());
         
-        bangDangKy = new BangDangKy();
+        bangDangKy = new BangDangKy(this);
         add(bangDangKy, BorderLayout.CENTER);
         
         revalidate();
@@ -132,6 +132,7 @@ public class CuaSoChinhMoi extends JFrame {
         dangXuatButton.setBackground(new Color(241, 121, 104));
         dangXuatButton.setForeground(Color.WHITE);
         dangXuatButton.setFocusPainted(false);
+        dangXuatButton.addActionListener(e -> hienThiBangDangNhap());
         
         userPanel.add(userLabel);
         userPanel.add(dangXuatButton);

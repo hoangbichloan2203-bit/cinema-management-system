@@ -20,8 +20,10 @@ public class BangDangKy extends JPanel {
     private JButton quayLaiButton;
     private JLabel lbiBaoLoi;
     private AuthService authService;
+    private CuaSoChinhMoi parentFrame;
     
-    public BangDangKy() {
+    public BangDangKy(CuaSoChinhMoi parentFrame) {
+        this.parentFrame = parentFrame;
         this.authService = new AuthService();
         setLayout(new BorderLayout());
         setBackground(new Color(31, 32, 44));
@@ -144,6 +146,7 @@ public class BangDangKy extends JPanel {
         quayLaiButton.setForeground(Color.WHITE);
         quayLaiButton.setPreferredSize(new Dimension(150, 45));
         quayLaiButton.setFocusPainted(false);
+        quayLaiButton.addActionListener(e -> parentFrame.hienThiBangDangNhap());
         
         buttonPanel.add(dangKyButton);
         buttonPanel.add(quayLaiButton);
@@ -189,7 +192,7 @@ public class BangDangKy extends JPanel {
             lbiBaoLoi.setText("");
             JOptionPane.showMessageDialog(this, "Đăng ký thành công! Bạn có thể đăng nhập ngay", "Thành Công", JOptionPane.INFORMATION_MESSAGE);
             xoaNoiDung();
-            // TODO: Chuyển về trang đăng nhập
+            parentFrame.hienThiBangDangNhap();
         } else {
             lbiBaoLoi.setText("Email đã tồn tại hoặc lỗi khi đăng ký");
         }

@@ -17,8 +17,10 @@ public class BangDangNhap extends JPanel {
     private JButton registerButton;
     private JLabel errorLabel;
     private AuthService authService;
+    private CuaSoChinhMoi parentFrame;
     
-    public BangDangNhap() {
+    public BangDangNhap(CuaSoChinhMoi parentFrame) {
+        this.parentFrame = parentFrame;
         this.authService = new AuthService();
         setLayout(new BorderLayout());
         setBackground(new Color(31, 32, 44));
@@ -97,6 +99,7 @@ public class BangDangNhap extends JPanel {
         registerButton.setForeground(Color.WHITE);
         registerButton.setPreferredSize(new Dimension(150, 45));
         registerButton.setFocusPainted(false);
+        registerButton.addActionListener(e -> parentFrame.hienThiBangDangKy());
         
         buttonPanel.add(loginButton);
         buttonPanel.add(registerButton);
@@ -121,7 +124,7 @@ public class BangDangNhap extends JPanel {
             JOptionPane.showMessageDialog(this, "Đăng nhập thành công! Vai trò: Nhân Viên", "Thành Công", JOptionPane.INFORMATION_MESSAGE);
             emailField.setText("");
             passwordField.setText("");
-            // TODO: Chuyển tới admin dashboard
+            parentFrame.hienThiBangDieuKhienQuanLy();
             return;
         }
         
@@ -131,7 +134,7 @@ public class BangDangNhap extends JPanel {
             JOptionPane.showMessageDialog(this, "Đăng nhập thành công! Vai trò: Khách Hàng", "Thành Công", JOptionPane.INFORMATION_MESSAGE);
             emailField.setText("");
             passwordField.setText("");
-            // TODO: Chuyển tới customer dashboard
+            parentFrame.hienThiBangDieuKhienKhachHang();
             return;
         }
         

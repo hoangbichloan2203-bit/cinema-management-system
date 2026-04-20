@@ -1,11 +1,11 @@
 import javax.swing.SwingUtilities;
 
-import ui.MainFrame;
+import ui.CuaSoChinhMoi;
 
 public class App {
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            MainFrame frame = new MainFrame();
+            CuaSoChinhMoi frame = new CuaSoChinhMoi();
             frame.setVisible(true);
         });
     }
