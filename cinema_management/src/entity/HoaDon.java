@@ -1,72 +1,62 @@
 package entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * Lớp đại diện cho Hóa Đơn
  */
 public class HoaDon implements Serializable {
-    private int maHoaDon;
-    private int maKhachHang;
-    private int maNhanVien;
-    private LocalDateTime ngayHoaDon;
-    private double tongTienHang;
-    private double soTienGiam;
-    private double tongTien;
-    private String hinhThucThanhToan; // CASH, CREDIT_CARD, DEBIT_CARD, ONLINE
-    private String trangThai; // PAID, PENDING, CANCELLED
+    private String maHoaDon;
+    private String maNV;
+    private String maKH;
+    private String maKM;
+    private String maThue;
+    private LocalDate ngayLap;
+    private BigDecimal tongTien;
 
     public HoaDon() {}
 
-    public HoaDon(int maHoaDon, int maKhachHang, int maNhanVien, LocalDateTime ngayHoaDon,
-                   double tongTienHang, double soTienGiam, double tongTien,
-                   String hinhThucThanhToan, String trangThai) {
+    public HoaDon(String maHoaDon, String maNV, String maKH, String maKM, 
+                  String maThue, LocalDate ngayLap, BigDecimal tongTien) {
         this.maHoaDon = maHoaDon;
-        this.maKhachHang = maKhachHang;
-        this.maNhanVien = maNhanVien;
-        this.ngayHoaDon = ngayHoaDon;
-        this.tongTienHang = tongTienHang;
-        this.soTienGiam = soTienGiam;
+        this.maNV = maNV;
+        this.maKH = maKH;
+        this.maKM = maKM;
+        this.maThue = maThue;
+        this.ngayLap = ngayLap;
         this.tongTien = tongTien;
-        this.hinhThucThanhToan = hinhThucThanhToan;
-        this.trangThai = trangThai;
     }
 
     // Getters and Setters
-    public int getMaHoaDon() { return maHoaDon; }
-    public void setMaHoaDon(int maHoaDon) { this.maHoaDon = maHoaDon; }
+    public String getMaHoaDon() { return maHoaDon; }
+    public void setMaHoaDon(String maHoaDon) { this.maHoaDon = maHoaDon; }
 
-    public int getMaKhachHang() { return maKhachHang; }
-    public void setMaKhachHang(int maKhachHang) { this.maKhachHang = maKhachHang; }
+    public String getMaNV() { return maNV; }
+    public void setMaNV(String maNV) { this.maNV = maNV; }
 
-    public int getMaNhanVien() { return maNhanVien; }
-    public void setMaNhanVien(int maNhanVien) { this.maNhanVien = maNhanVien; }
+    public String getMaKH() { return maKH; }
+    public void setMaKH(String maKH) { this.maKH = maKH; }
 
-    public LocalDateTime getNgayHoaDon() { return ngayHoaDon; }
-    public void setNgayHoaDon(LocalDateTime ngayHoaDon) { this.ngayHoaDon = ngayHoaDon; }
+    public String getMaKM() { return maKM; }
+    public void setMaKM(String maKM) { this.maKM = maKM; }
 
-    public double getTongTienHang() { return tongTienHang; }
-    public void setTongTienHang(double tongTienHang) { this.tongTienHang = tongTienHang; }
+    public String getMaThue() { return maThue; }
+    public void setMaThue(String maThue) { this.maThue = maThue; }
 
-    public double getSoTienGiam() { return soTienGiam; }
-    public void setSoTienGiam(double soTienGiam) { this.soTienGiam = soTienGiam; }
+    public LocalDate getNgayLap() { return ngayLap; }
+    public void setNgayLap(LocalDate ngayLap) { this.ngayLap = ngayLap; }
 
-    public double getTongTien() { return tongTien; }
-    public void setTongTien(double tongTien) { this.tongTien = tongTien; }
-
-    public String getHinhThucThanhToan() { return hinhThucThanhToan; }
-    public void setHinhThucThanhToan(String hinhThucThanhToan) { this.hinhThucThanhToan = hinhThucThanhToan; }
-
-    public String getTrangThai() { return trangThai; }
-    public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
+    public BigDecimal getTongTien() { return tongTien; }
+    public void setTongTien(BigDecimal tongTien) { this.tongTien = tongTien; }
 
     @Override
     public String toString() {
         return "HoaDon{" +
-                "maHoaDon=" + maHoaDon +
+                "maHoaDon='" + maHoaDon + '\'' +
                 ", tongTien=" + tongTien +
-                ", ngayHoaDon=" + ngayHoaDon +
+                ", ngayLap=" + ngayLap +
                 '}';
     }
 }
