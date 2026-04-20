@@ -1,8 +1,5 @@
 package ui;
 
-import services.AuthService;
-import entity.Customer;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -15,7 +12,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainFrameNew extends JFrame {
+/**
+ * Cửa sổ chính mới
+ */
+public class CuaSoChinhMoi extends JFrame {
     
     private JPanel mainContentPanel;
     private JPanel menuPanel;
@@ -23,89 +23,83 @@ public class MainFrameNew extends JFrame {
     private final List<JPanel> tatCaItemMenu = new ArrayList<>();
     private final List<JPanel> danhSachSubMenu = new ArrayList<>();
     
-    private LoginPanel loginPanel;
-    private RegisterPanel registerPanel;
-    private CustomerDashboardPanel customerPanel;
-    private AdminDashboardPanel adminPanel;
+    private BangDangNhap bangDangNhap;
+    private BangDangKy bangDangKy;
+    private BangDieuKhienKhachHang bangDieuKhienKhachHang;
+    private BangDieuKhienQuanLy bangDieuKhienQuanLy;
     
     private static final Color MAU_NEN_MENU = new Color(31, 32, 44);
     private static final Color MAU_MENU_CHON = new Color(241, 121, 104);
     private static final Color MAU_CHU_TRANG = Color.WHITE;
     
-    public MainFrameNew() {
+    public CuaSoChinhMoi() {
         setTitle("Hệ thống Quản lý Rạp Chiếu Phim T3L");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         
-        // Bắt đầu từ LoginPanel
-        showLoginPanel();
+        // Bắt đầu từ BangDangNhap
+        hienThiBangDangNhap();
     }
     
     /**
-     * Hiển thị LoginPanel
+     * Hiển thị BangDangNhap
      */
-    public void showLoginPanel() {
+    public void hienThiBangDangNhap() {
         getContentPane().removeAll();
         setLayout(new BorderLayout());
         
-        loginPanel = new LoginPanel(this);
-        add(loginPanel, BorderLayout.CENTER);
+        bangDangNhap = new BangDangNhap();
+        add(bangDangNhap, BorderLayout.CENTER);
         
         revalidate();
         repaint();
     }
     
     /**
-     * Hiển thị RegisterPanel
+     * Hiển thị BangDangKy
      */
-    public void showRegisterPanel() {
+    public void hienThiBangDangKy() {
         getContentPane().removeAll();
         setLayout(new BorderLayout());
         
-        registerPanel = new RegisterPanel(this);
-        add(registerPanel, BorderLayout.CENTER);
+        bangDangKy = new BangDangKy();
+        add(bangDangKy, BorderLayout.CENTER);
         
         revalidate();
         repaint();
     }
     
     /**
-     * Hiển thị Customer Dashboard
+     * Hiển thị BangDieuKhienKhachHang
      */
-    public void showCustomerDashboard() {
+    public void hienThiBangDieuKhienKhachHang() {
         getContentPane().removeAll();
         setLayout(new BorderLayout());
         
-        Customer currentUser = AuthService.getCurrentUser();
-        if (currentUser != null) {
-            headerPanel = createHeaderPanel(currentUser.getFullName(), "KHÁCH HÀNG");
-            add(headerPanel, BorderLayout.NORTH);
-            
-            customerPanel = new CustomerDashboardPanel(this);
-            add(customerPanel, BorderLayout.CENTER);
-        }
+        headerPanel = taoHeaderPanel("Khách Hàng");
+        add(headerPanel, BorderLayout.NORTH);
+        
+        bangDieuKhienKhachHang = new BangDieuKhienKhachHang();
+        add(bangDieuKhienKhachHang, BorderLayout.CENTER);
         
         revalidate();
         repaint();
     }
     
     /**
-     * Hiển thị Admin Dashboard
+     * Hiển thị BangDieuKhienQuanLy
      */
-    public void showAdminDashboard() {
+    public void hienThiBangDieuKhienQuanLy() {
         getContentPane().removeAll();
         setLayout(new BorderLayout());
         
-        Customer currentUser = AuthService.getCurrentUser();
-        if (currentUser != null) {
-            headerPanel = createHeaderPanel(currentUser.getFullName(), "QUẢN TRỊ VIÊN");
-            add(headerPanel, BorderLayout.NORTH);
-            
-            adminPanel = new AdminDashboardPanel(this);
-            add(adminPanel, BorderLayout.CENTER);
-        }
+        headerPanel = taoHeaderPanel("Quản Lý");
+        add(headerPanel, BorderLayout.NORTH);
+        
+        bangDieuKhienQuanLy = new BangDieuKhienQuanLy();
+        add(bangDieuKhienQuanLy, BorderLayout.CENTER);
         
         revalidate();
         repaint();
@@ -114,7 +108,7 @@ public class MainFrameNew extends JFrame {
     /**
      * Tạo Header Panel với thông tin người dùng
      */
-    private JPanel createHeaderPanel(String userName, String role) {
+    private JPanel taoHeaderPanel(String vaiTro) {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(new Color(31, 32, 44));
         header.setBorder(new EmptyBorder(10, 20, 10, 20));
@@ -129,32 +123,22 @@ public class MainFrameNew extends JFrame {
         JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 0));
         userPanel.setBackground(new Color(31, 32, 44));
         
-        JLabel userLabel = new JLabel("Xin chào: " + userName + " (" + role + ")");
+        JLabel userLabel = new JLabel("Vai Trò: " + vaiTro);
         userLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         userLabel.setForeground(Color.LIGHT_GRAY);
         
-        JButton logoutButton = new JButton("Đăng Xuất");
-        logoutButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        logoutButton.setBackground(new Color(241, 121, 104));
-        logoutButton.setForeground(Color.WHITE);
-        logoutButton.setFocusPainted(false);
-        logoutButton.addActionListener(e -> handleLogout());
+        JButton dangXuatButton = new JButton("Đăng Xuất");
+        dangXuatButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        dangXuatButton.setBackground(new Color(241, 121, 104));
+        dangXuatButton.setForeground(Color.WHITE);
+        dangXuatButton.setFocusPainted(false);
         
         userPanel.add(userLabel);
-        userPanel.add(logoutButton);
+        userPanel.add(dangXuatButton);
         
         header.add(titleLabel, BorderLayout.WEST);
         header.add(userPanel, BorderLayout.EAST);
         
         return header;
-    }
-    
-    /**
-     * Xử lý đăng xuất
-     */
-    private void handleLogout() {
-        AuthService authService = new AuthService();
-        authService.logout();
-        showLoginPanel();
     }
 }

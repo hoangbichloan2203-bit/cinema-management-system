@@ -6,12 +6,12 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class CustomerDashboardPanel extends JPanel {
+/**
+ * Giao diện Điều Khiển Khách Hàng
+ */
+public class BangDieuKhienKhachHang extends JPanel {
     
-    private MainFrameNew parentFrame;
-    
-    public CustomerDashboardPanel(MainFrameNew parentFrame) {
-        this.parentFrame = parentFrame;
+    public BangDieuKhienKhachHang() {
         setLayout(new BorderLayout());
         setBackground(new Color(31, 32, 44));
         
@@ -31,7 +31,7 @@ public class CustomerDashboardPanel extends JPanel {
         menuPanel.setPreferredSize(new Dimension(250, getHeight()));
         menuPanel.setBorder(new EmptyBorder(20, 0, 20, 0));
         
-        String[] menuItems = {
+        String[] danhSachMenu = {
             "Duyệt Phim",
             "Lịch Chiếu",
             "Đặt Vé",
@@ -40,8 +40,8 @@ public class CustomerDashboardPanel extends JPanel {
             "Khuyến Mãi"
         };
         
-        for (String item : menuItems) {
-            JButton btn = createMenuButton(item);
+        for (String item : danhSachMenu) {
+            JButton btn = taoNutMenu(item);
             menuPanel.add(btn);
             menuPanel.add(Box.createVerticalStrut(10));
         }
@@ -55,7 +55,7 @@ public class CustomerDashboardPanel extends JPanel {
         return scrollPane;
     }
     
-    private JButton createMenuButton(String text) {
+    private JButton taoNutMenu(String text) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         btn.setAlignmentX(LEFT_ALIGNMENT);
@@ -77,13 +77,6 @@ public class CustomerDashboardPanel extends JPanel {
             }
         });
         
-        btn.addActionListener(e -> handleMenuClick(text));
         return btn;
-    }
-    
-    private void handleMenuClick(String item) {
-        // TODO: Implement each menu item
-        System.out.println("Clicked: " + item);
-        JOptionPane.showMessageDialog(this, "Module: " + item + " đang được phát triển", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
     }
 }

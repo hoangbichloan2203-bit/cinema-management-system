@@ -1,33 +1,30 @@
 package ui;
 
-import services.BookingService;
-import services.AuthService;
-import entity.Customer;
+import entity.SuatChieu;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
 
-public class PaymentPanel extends JPanel {
+/**
+ * Giao diện Thanh Toán
+ */
+public class BangThanhToan extends JPanel {
     
-    private BookingService bookingService;
-    private int showtimeId;
-    private List<Integer> selectedSeatIds;
-    private double totalPrice;
+    private String maSC;
+    private List<String> gheMuon;
+    private double tongGia;
     
-    private JLabel subtotalLabel;
-    private JLabel discountLabel;
-    private JLabel totalLabel;
-    private JComboBox<String> paymentMethodCombo;
-    private JTextArea orderSummaryArea;
-    private Runnable onPaymentSuccess;
+    private JLabel lbTongTien;
+    private JLabel lbKhuyenMai;
+    private JLabel lbTongCong;
+    private JComboBox<String> cbbHinhThucTT;
+    private JTextArea taGhiChuDonHang;
     
-    public PaymentPanel(int showtimeId, List<Integer> seatIds, double price, Runnable onSuccess) {
-        this.bookingService = new BookingService();
-        this.showtimeId = showtimeId;
-        this.selectedSeatIds = seatIds;
-        this.totalPrice = price;
-        this.onPaymentSuccess = onSuccess;
+    public BangThanhToan(String maSC, List<String> gheMuon, double tongGia) {
+        this.maSC = maSC;
+        this.gheMuon = gheMuon;
+        this.tongGia = tongGia;
         
         setLayout(new BorderLayout());
         setBackground(new Color(31, 32, 44));
@@ -86,47 +83,47 @@ public class PaymentPanel extends JPanel {
         rightPanel.setBackground(new Color(31, 32, 44));
         rightPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
         
-        // Subtotal
-        JPanel subtotalPanel = createPriceRow("Tổng Tiền:", String.format("%.0f VND", totalPrice));
-        rightPanel.add(subtotalPanel);
+        // Tổng tiền
+        JPanel tongTienPanel = createPriceRow("Tổng Tiền:", String.format("%.0f VND", tongGia));
+        rightPanel.add(tongTienPanel);
         rightPanel.add(Box.createVerticalStrut(15));
         
-        // Discount
-        JPanel discountPanel = createPriceRow("Khuyến Mãi:", "0 VND");
-        rightPanel.add(discountPanel);
+        // Khuyến mãi
+        JPanel khuyenMaiPanel = createPriceRow("Khuyến Mãi:", "0 VND");
+        rightPanel.add(khuyenMaiPanel);
         rightPanel.add(Box.createVerticalStrut(15));
         
-        // Payment method
-        JLabel methodLabel = new JLabel("Hình Thức Thanh Toán:");
-        methodLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        methodLabel.setForeground(Color.WHITE);
-        rightPanel.add(methodLabel);
+        // Hình thức thanh toán
+        JLabel hinhThucLabel = new JLabel("Hình Thức Thanh Toán:");
+        hinhThucLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        hinhThucLabel.setForeground(Color.WHITE);
+        rightPanel.add(hinhThucLabel);
         
-        paymentMethodCombo = new JComboBox<>(new String[] {
+        cbbHinhThucTT = new JComboBox<>(new String[] {
             "Tiền Mặt", "Thẻ Tín Dụng", "Chuyển Khoản", "E-Wallet"
         });
-        paymentMethodCombo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        paymentMethodCombo.setBackground(new Color(50, 50, 60));
-        paymentMethodCombo.setForeground(Color.WHITE);
-        paymentMethodCombo.setMaximumSize(new Dimension(300, 35));
-        rightPanel.add(paymentMethodCombo);
+        cbbHinhThucTT.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        cbbHinhThucTT.setBackground(new Color(50, 50, 60));
+        cbbHinhThucTT.setForeground(Color.WHITE);
+        cbbHinhThucTT.setMaximumSize(new Dimension(300, 35));
+        rightPanel.add(cbbHinhThucTT);
         rightPanel.add(Box.createVerticalStrut(25));
         
-        // Total
-        JPanel totalPanel = new JPanel(new BorderLayout());
-        totalPanel.setBackground(new Color(31, 32, 44));
+        // Tổng cộng
+        JPanel tongCongPanel = new JPanel(new BorderLayout());
+        tongCongPanel.setBackground(new Color(31, 32, 44));
         
-        JLabel totalTitleLabel = new JLabel("Tổng Cộng:");
-        totalTitleLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        totalTitleLabel.setForeground(Color.WHITE);
+        JLabel tongCongTitleLabel = new JLabel("Tổng Cộng:");
+        tongCongTitleLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        tongCongTitleLabel.setForeground(Color.WHITE);
         
-        totalLabel = new JLabel(String.format("%.0f VND", totalPrice));
-        totalLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        totalLabel.setForeground(new Color(241, 121, 104));
+        lbTongCong = new JLabel(String.format("%.0f VND", tongGia));
+        lbTongCong.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lbTongCong.setForeground(new Color(241, 121, 104));
         
-        totalPanel.add(totalTitleLabel, BorderLayout.WEST);
-        totalPanel.add(totalLabel, BorderLayout.EAST);
-        rightPanel.add(totalPanel);
+        tongCongPanel.add(tongCongTitleLabel, BorderLayout.WEST);
+        tongCongPanel.add(lbTongCong, BorderLayout.EAST);
+        rightPanel.add(tongCongPanel);
         
         rightPanel.add(Box.createVerticalGlue());
         
@@ -165,70 +162,43 @@ public class PaymentPanel extends JPanel {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
         buttonPanel.setBackground(new Color(31, 32, 44));
         
-        JButton paymentBtn = new JButton("Thanh Toán");
-        paymentBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        paymentBtn.setBackground(new Color(241, 121, 104));
-        paymentBtn.setForeground(Color.WHITE);
-        paymentBtn.setFocusPainted(false);
-        paymentBtn.setPreferredSize(new Dimension(150, 45));
-        paymentBtn.addActionListener(e -> processPayment());
+        JButton thanhToanBtn = new JButton("Thanh Toán");
+        thanhToanBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        thanhToanBtn.setBackground(new Color(241, 121, 104));
+        thanhToanBtn.setForeground(Color.WHITE);
+        thanhToanBtn.setFocusPainted(false);
+        thanhToanBtn.setPreferredSize(new Dimension(150, 45));
         
-        JButton cancelBtn = new JButton("Hủy");
-        cancelBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        cancelBtn.setBackground(new Color(100, 100, 120));
-        cancelBtn.setForeground(Color.WHITE);
-        cancelBtn.setFocusPainted(false);
-        cancelBtn.setPreferredSize(new Dimension(150, 45));
-        cancelBtn.addActionListener(e -> {
-            // Go back
-        });
+        JButton huyBtn = new JButton("Hủy");
+        huyBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        huyBtn.setBackground(new Color(100, 100, 120));
+        huyBtn.setForeground(Color.WHITE);
+        huyBtn.setFocusPainted(false);
+        huyBtn.setPreferredSize(new Dimension(150, 45));
         
-        buttonPanel.add(paymentBtn);
-        buttonPanel.add(cancelBtn);
+        buttonPanel.add(thanhToanBtn);
+        buttonPanel.add(huyBtn);
         
         return buttonPanel;
     }
     
-    private void updateOrderSummary() {
-        StringBuilder summary = new StringBuilder();
-        summary.append("═════════════════════════════════════\n");
-        summary.append("Suất Chiếu ID: ").append(showtimeId).append("\n");
-        summary.append("Số Ghế: ").append(selectedSeatIds.size()).append("\n");
-        summary.append("ID Ghế: ");
-        for (int i = 0; i < selectedSeatIds.size(); i++) {
-            summary.append(selectedSeatIds.get(i));
-            if (i < selectedSeatIds.size() - 1) summary.append(", ");
+    private void capNhatTomTatDonHang() {
+        StringBuilder tomTat = new StringBuilder();
+        tomTat.append("═════════════════════════════════════\n");
+        tomTat.append("Suất Chiếu ID: ").append(maSC).append("\n");
+        tomTat.append("Số Ghế: ").append(gheMuon.size()).append("\n");
+        tomTat.append("ID Ghế: ");
+        for (int i = 0; i < gheMuon.size(); i++) {
+            tomTat.append(gheMuon.get(i));
+            if (i < gheMuon.size() - 1) tomTat.append(", ");
         }
-        summary.append("\n");
-        summary.append("═════════════════════════════════════\n");
-        summary.append("\nGiá tiền chi tiết:\n");
-        summary.append("• Giá vé: ").append(String.format("%.0f VND", totalPrice / selectedSeatIds.size())).append("/ghế\n");
-        summary.append("• Số ghế: ").append(selectedSeatIds.size()).append("\n");
-        summary.append("• Tổng: ").append(String.format("%.0f VND", totalPrice)).append("\n");
+        tomTat.append("\n");
+        tomTat.append("═════════════════════════════════════\n");
+        tomTat.append("\nGiá tiền chi tiết:\n");
+        tomTat.append("• Giá vé: ").append(String.format("%.0f VND", tongGia / gheMuon.size())).append("/ghế\n");
+        tomTat.append("• Số ghế: ").append(gheMuon.size()).append("\n");
+        tomTat.append("• Tổng: ").append(String.format("%.0f VND", tongGia)).append("\n");
         
-        orderSummaryArea.setText(summary.toString());
-    }
-    
-    private void processPayment() {
-        Customer customer = AuthService.getCurrentUser();
-        if (customer == null) {
-            JOptionPane.showMessageDialog(this, "Bạn cần đăng nhập", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        String paymentMethod = (String) paymentMethodCombo.getSelectedItem();
-        
-        if (bookingService.bookTickets(customer.getCustomerId(), showtimeId, selectedSeatIds, totalPrice, paymentMethod)) {
-            JOptionPane.showMessageDialog(this, 
-                "Thanh toán thành công!\n\nVé của bạn đã được xác nhận.\nVui lòng check email để nhận chi tiết vé.", 
-                "Thành Công", 
-                JOptionPane.INFORMATION_MESSAGE);
-            
-            if (onPaymentSuccess != null) {
-                onPaymentSuccess.run();
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Lỗi trong quá trình thanh toán. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
+        taGhiChuDonHang.setText(tomTat.toString());
     }
 }

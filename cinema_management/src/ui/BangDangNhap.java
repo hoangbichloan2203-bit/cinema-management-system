@@ -1,5 +1,6 @@
 package ui;
 
+import services.AuthService;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -15,8 +16,10 @@ public class BangDangNhap extends JPanel {
     private JButton loginButton;
     private JButton registerButton;
     private JLabel errorLabel;
+    private AuthService authService;
     
     public BangDangNhap() {
+        this.authService = new AuthService();
         setLayout(new BorderLayout());
         setBackground(new Color(31, 32, 44));
         
@@ -112,9 +115,26 @@ public class BangDangNhap extends JPanel {
             return;
         }
         
-        // TODO: Gọi AuthService để xác thực
-        errorLabel.setText("");
-        emailField.setText("");
-        passwordField.setText("");
+        // Thử đăng nhập nhân viên trước
+        if (authService.dangNhapNhanVien(email, password)) {
+            errorLabel.setText("");
+            JOptionPane.showMessageDialog(this, "Đăng nhập thành công! Vai trò: Nhân Viên", "Thành Công", JOptionPane.INFORMATION_MESSAGE);
+            emailField.setText("");
+            passwordField.setText("");
+            // TODO: Chuyển tới admin dashboard
+            return;
+        }
+        
+        // Thử đăng nhập khách hàng
+        if (authService.dangNhapKhachHang(email, password)) {
+            errorLabel.setText("");
+            JOptionPane.showMessageDialog(this, "Đăng nhập thành công! Vai trò: Khách Hàng", "Thành Công", JOptionPane.INFORMATION_MESSAGE);
+            emailField.setText("");
+            passwordField.setText("");
+            // TODO: Chuyển tới customer dashboard
+            return;
+        }
+        
+        errorLabel.setText("Email hoặc mật khẩu không đúng");
     }
 }

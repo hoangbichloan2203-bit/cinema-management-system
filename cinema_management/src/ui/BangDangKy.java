@@ -1,27 +1,27 @@
 package ui;
 
+import services.AuthService;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-import services.AuthService;
-
-public class RegisterPanel extends JPanel {
+/**
+ * Giao diện Đăng Ký
+ */
+public class BangDangKy extends JPanel {
     
-    private JTextField fullNameField;
+    private JTextField hoTenField;
     private JTextField emailField;
-    private JTextField phoneField;
-    private JPasswordField passwordField;
-    private JPasswordField confirmPasswordField;
-    private JButton registerButton;
-    private JButton backButton;
-    private JLabel errorLabel;
+    private JTextField sdtField;
+    private JPasswordField matKhauField;
+    private JPasswordField xacNhanMatKhauField;
+    private JButton dangKyButton;
+    private JButton quayLaiButton;
+    private JLabel lbiBaoLoi;
     private AuthService authService;
-    private MainFrame parentFrame;
     
-    public RegisterPanel(MainFrame parentFrame) {
-        this.parentFrame = parentFrame;
+    public BangDangKy() {
         this.authService = new AuthService();
         setLayout(new BorderLayout());
         setBackground(new Color(31, 32, 44));
@@ -43,19 +43,19 @@ public class RegisterPanel extends JPanel {
         formPanel.add(titleLabel);
         formPanel.add(Box.createVerticalStrut(25));
         
-        // Full Name
-        JLabel nameLabel = new JLabel("Họ và tên:");
-        nameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        nameLabel.setForeground(Color.WHITE);
-        formPanel.add(nameLabel);
+        // Họ và tên
+        JLabel hoTenLabel = new JLabel("Họ và tên:");
+        hoTenLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        hoTenLabel.setForeground(Color.WHITE);
+        formPanel.add(hoTenLabel);
         
-        fullNameField = new JTextField();
-        fullNameField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        fullNameField.setMaximumSize(new Dimension(400, 40));
-        fullNameField.setBackground(new Color(50, 50, 60));
-        fullNameField.setForeground(Color.WHITE);
-        fullNameField.setCaretColor(Color.WHITE);
-        formPanel.add(fullNameField);
+        hoTenField = new JTextField();
+        hoTenField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        hoTenField.setMaximumSize(new Dimension(400, 40));
+        hoTenField.setBackground(new Color(50, 50, 60));
+        hoTenField.setForeground(Color.WHITE);
+        hoTenField.setCaretColor(Color.WHITE);
+        formPanel.add(hoTenField);
         formPanel.add(Box.createVerticalStrut(12));
         
         // Email
@@ -73,130 +73,125 @@ public class RegisterPanel extends JPanel {
         formPanel.add(emailField);
         formPanel.add(Box.createVerticalStrut(12));
         
-        // Phone
-        JLabel phoneLabel = new JLabel("Số điện thoại:");
-        phoneLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        phoneLabel.setForeground(Color.WHITE);
-        formPanel.add(phoneLabel);
+        // Số điện thoại
+        JLabel sdtLabel = new JLabel("Số điện thoại:");
+        sdtLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        sdtLabel.setForeground(Color.WHITE);
+        formPanel.add(sdtLabel);
         
-        phoneField = new JTextField();
-        phoneField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        phoneField.setMaximumSize(new Dimension(400, 40));
-        phoneField.setBackground(new Color(50, 50, 60));
-        phoneField.setForeground(Color.WHITE);
-        phoneField.setCaretColor(Color.WHITE);
-        formPanel.add(phoneField);
+        sdtField = new JTextField();
+        sdtField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        sdtField.setMaximumSize(new Dimension(400, 40));
+        sdtField.setBackground(new Color(50, 50, 60));
+        sdtField.setForeground(Color.WHITE);
+        sdtField.setCaretColor(Color.WHITE);
+        formPanel.add(sdtField);
         formPanel.add(Box.createVerticalStrut(12));
         
-        // Password
-        JLabel passwordLabel = new JLabel("Mật khẩu:");
-        passwordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        passwordLabel.setForeground(Color.WHITE);
-        formPanel.add(passwordLabel);
+        // Mật khẩu
+        JLabel matKhauLabel = new JLabel("Mật khẩu:");
+        matKhauLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        matKhauLabel.setForeground(Color.WHITE);
+        formPanel.add(matKhauLabel);
         
-        passwordField = new JPasswordField();
-        passwordField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        passwordField.setMaximumSize(new Dimension(400, 40));
-        passwordField.setBackground(new Color(50, 50, 60));
-        passwordField.setForeground(Color.WHITE);
-        passwordField.setCaretColor(Color.WHITE);
-        formPanel.add(passwordField);
+        matKhauField = new JPasswordField();
+        matKhauField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        matKhauField.setMaximumSize(new Dimension(400, 40));
+        matKhauField.setBackground(new Color(50, 50, 60));
+        matKhauField.setForeground(Color.WHITE);
+        matKhauField.setCaretColor(Color.WHITE);
+        formPanel.add(matKhauField);
         formPanel.add(Box.createVerticalStrut(12));
         
-        // Confirm Password
-        JLabel confirmLabel = new JLabel("Xác nhận mật khẩu:");
-        confirmLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        confirmLabel.setForeground(Color.WHITE);
-        formPanel.add(confirmLabel);
+        // Xác nhận mật khẩu
+        JLabel xacNhanLabel = new JLabel("Xác nhận mật khẩu:");
+        xacNhanLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        xacNhanLabel.setForeground(Color.WHITE);
+        formPanel.add(xacNhanLabel);
         
-        confirmPasswordField = new JPasswordField();
-        confirmPasswordField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        confirmPasswordField.setMaximumSize(new Dimension(400, 40));
-        confirmPasswordField.setBackground(new Color(50, 50, 60));
-        confirmPasswordField.setForeground(Color.WHITE);
-        confirmPasswordField.setCaretColor(Color.WHITE);
-        formPanel.add(confirmPasswordField);
+        xacNhanMatKhauField = new JPasswordField();
+        xacNhanMatKhauField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        xacNhanMatKhauField.setMaximumSize(new Dimension(400, 40));
+        xacNhanMatKhauField.setBackground(new Color(50, 50, 60));
+        xacNhanMatKhauField.setForeground(Color.WHITE);
+        xacNhanMatKhauField.setCaretColor(Color.WHITE);
+        formPanel.add(xacNhanMatKhauField);
         formPanel.add(Box.createVerticalStrut(15));
         
-        // Error Label
-        errorLabel = new JLabel("");
-        errorLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        errorLabel.setForeground(new Color(241, 121, 104));
-        formPanel.add(errorLabel);
+        // Thông báo lỗi
+        lbiBaoLoi = new JLabel("");
+        lbiBaoLoi.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lbiBaoLoi.setForeground(new Color(241, 121, 104));
+        formPanel.add(lbiBaoLoi);
         formPanel.add(Box.createVerticalStrut(10));
         
-        // Button Panel
+        // Panel nút
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 0));
         buttonPanel.setBackground(new Color(31, 32, 44));
         
-        registerButton = new JButton("Đăng Ký");
-        registerButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        registerButton.setBackground(new Color(241, 121, 104));
-        registerButton.setForeground(Color.WHITE);
-        registerButton.setPreferredSize(new Dimension(150, 45));
-        registerButton.setFocusPainted(false);
-        registerButton.addActionListener(this::handleRegister);
+        dangKyButton = new JButton("Đăng Ký");
+        dangKyButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        dangKyButton.setBackground(new Color(241, 121, 104));
+        dangKyButton.setForeground(Color.WHITE);
+        dangKyButton.setPreferredSize(new Dimension(150, 45));
+        dangKyButton.setFocusPainted(false);
+        dangKyButton.addActionListener(this::handleRegister);
         
-        backButton = new JButton("Quay Lại");
-        backButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        backButton.setBackground(new Color(100, 100, 120));
-        backButton.setForeground(Color.WHITE);
-        backButton.setPreferredSize(new Dimension(150, 45));
-        backButton.setFocusPainted(false);
-        backButton.addActionListener(e -> parentFrame.showLoginPanel());
+        quayLaiButton = new JButton("Quay Lại");
+        quayLaiButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        quayLaiButton.setBackground(new Color(100, 100, 120));
+        quayLaiButton.setForeground(Color.WHITE);
+        quayLaiButton.setPreferredSize(new Dimension(150, 45));
+        quayLaiButton.setFocusPainted(false);
         
-        buttonPanel.add(registerButton);
-        buttonPanel.add(backButton);
+        buttonPanel.add(dangKyButton);
+        buttonPanel.add(quayLaiButton);
         formPanel.add(buttonPanel);
         
         formPanel.add(Box.createVerticalGlue());
         return formPanel;
     }
     
-    private void handleRegister(ActionEvent e) {
-        String fullName = fullNameField.getText().trim();
-        String email = emailField.getText().trim();
-        String phone = phoneField.getText().trim();
-        String password = new String(passwordField.getPassword());
-        String confirmPassword = new String(confirmPasswordField.getPassword());
-        
-        // Validation
-        if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Vui lòng điền đầy đủ tất cả thông tin");
-            return;
-        }
-        
-        if (!password.equals(confirmPassword)) {
-            errorLabel.setText("Mật khẩu xác nhận không khớp");
-            return;
-        }
-        
-        if (password.length() < 6) {
-            errorLabel.setText("Mật khẩu phải có ít nhất 6 ký tự");
-            return;
-        }
-        
-        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            errorLabel.setText("Email không hợp lệ");
-            return;
-        }
-        
-        if (authService.register(fullName, email, phone, password)) {
-            errorLabel.setText("");
-            clearFields();
-            JOptionPane.showMessageDialog(this, "Đăng ký thành công! Vui lòng đăng nhập.", "Thành Công", JOptionPane.INFORMATION_MESSAGE);
-            parentFrame.showLoginPanel();
-        } else {
-            errorLabel.setText("Email đã được đăng ký hoặc lỗi hệ thống");
-        }
+    private void xoaNoiDung() {
+        hoTenField.setText("");
+        emailField.setText("");
+        sdtField.setText("");
+        matKhauField.setText("");
+        xacNhanMatKhauField.setText("");
     }
     
-    private void clearFields() {
-        fullNameField.setText("");
-        emailField.setText("");
-        phoneField.setText("");
-        passwordField.setText("");
-        confirmPasswordField.setText("");
+    private void handleRegister(ActionEvent e) {
+        String hoTen = hoTenField.getText().trim();
+        String email = emailField.getText().trim();
+        String sdt = sdtField.getText().trim();
+        String matKhau = new String(matKhauField.getPassword());
+        String xacNhan = new String(xacNhanMatKhauField.getPassword());
+        
+        // Kiểm tra nhập liệu
+        if (hoTen.isEmpty() || email.isEmpty() || sdt.isEmpty() || matKhau.isEmpty()) {
+            lbiBaoLoi.setText("Vui lòng nhập đầy đủ thông tin");
+            return;
+        }
+        
+        if (!matKhau.equals(xacNhan)) {
+            lbiBaoLoi.setText("Mật khẩu xác nhận không khớp");
+            return;
+        }
+        
+        if (matKhau.length() < 6) {
+            lbiBaoLoi.setText("Mật khẩu phải có ít nhất 6 ký tự");
+            return;
+        }
+        
+        // Đăng ký tài khoản
+        if (authService.dangKyKhachHang(hoTen, email, sdt, matKhau)) {
+            lbiBaoLoi.setText("");
+            JOptionPane.showMessageDialog(this, "Đăng ký thành công! Bạn có thể đăng nhập ngay", "Thành Công", JOptionPane.INFORMATION_MESSAGE);
+            xoaNoiDung();
+            // TODO: Chuyển về trang đăng nhập
+        } else {
+            lbiBaoLoi.setText("Email đã tồn tại hoặc lỗi khi đăng ký");
+        }
     }
 }

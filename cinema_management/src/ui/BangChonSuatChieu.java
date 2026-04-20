@@ -1,37 +1,30 @@
 package ui;
 
-import dao.FilmDAO;
-import dao.ShowtimeDAO;
-import entity.Film;
-import entity.Showtime;
+import entity.Phim;
+import entity.SuatChieu;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Vector;
 
-public class ShowtimeSelectionPanel extends JPanel {
+/**
+ * Giao diện Chọn Suất Chiếu
+ */
+public class BangChonSuatChieu extends JPanel {
     
-    private FilmDAO filmDAO;
-    private ShowtimeDAO showtimeDAO;
     private JComboBox<String> filmCombo;
     private JTable showtimeTable;
     private DefaultTableModel tableModel;
-    private Showtime selectedShowtime;
+    private SuatChieu selectedShowtime;
     
-    public ShowtimeSelectionPanel(Runnable onShowtimeSelected) {
-        this.filmDAO = new FilmDAO();
-        this.showtimeDAO = new ShowtimeDAO();
+    public BangChonSuatChieu() {
         setLayout(new BorderLayout());
         setBackground(new Color(31, 32, 44));
         
         add(createHeaderPanel(), BorderLayout.NORTH);
-        add(createSelectionPanel(onShowtimeSelected), BorderLayout.CENTER);
-        
-        loadFilms();
+        add(createSelectionPanel(), BorderLayout.CENTER);
     }
     
     private JPanel createHeaderPanel() {
@@ -48,7 +41,7 @@ public class ShowtimeSelectionPanel extends JPanel {
         return header;
     }
     
-    private JPanel createSelectionPanel(Runnable onShowtimeSelected) {
+    private JPanel createSelectionPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(new Color(31, 32, 44));
         panel.setBorder(new EmptyBorder(15, 20, 15, 20));
@@ -66,7 +59,6 @@ public class ShowtimeSelectionPanel extends JPanel {
         filmCombo.setBackground(new Color(50, 50, 60));
         filmCombo.setForeground(Color.WHITE);
         filmCombo.setPreferredSize(new Dimension(300, 35));
-        filmCombo.addActionListener(e -> loadShowtimes());
         
         filmPanel.add(filmLabel);
         filmPanel.add(filmCombo);
@@ -116,15 +108,6 @@ public class ShowtimeSelectionPanel extends JPanel {
         selectBtn.setForeground(Color.WHITE);
         selectBtn.setFocusPainted(false);
         selectBtn.setPreferredSize(new Dimension(150, 40));
-        selectBtn.addActionListener(e -> {
-            if (selectedShowtime != null) {
-                if (onShowtimeSelected != null) {
-                    onShowtimeSelected.run();
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn suất chiếu", "Cảnh Báo", JOptionPane.WARNING_MESSAGE);
-            }
-        });
         
         buttonPanel.add(selectBtn);
         
@@ -133,38 +116,7 @@ public class ShowtimeSelectionPanel extends JPanel {
         return panel;
     }
     
-    private void loadFilms() {
-        filmCombo.removeAllItems();
-        List<Film> films = filmDAO.getAllFilms();
-        for (Film film : films) {
-            filmCombo.addItem(film.getFilmId() + " - " + film.getFilmName());
-        }
-    }
-    
-    private void loadShowtimes() {
-        tableModel.setRowCount(0);
-        
-        String selectedItem = (String) filmCombo.getSelectedItem();
-        if (selectedItem == null) return;
-        
-        int filmId = Integer.parseInt(selectedItem.split(" - ")[0]);
-        List<Showtime> showtimes = showtimeDAO.getShowtimesByFilmId(filmId);
-        
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        
-        for (Showtime showtime : showtimes) {
-            Vector<Object> row = new Vector<>();
-            row.add(showtime.getShowtimeId());
-            row.add("Phòng " + showtime.getTheaterId());
-            row.add(showtime.getStartTime().format(dateFormatter));
-            row.add(showtime.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-            row.add(String.format("%.0f VND", showtime.getTicketPrice()));
-            row.add(showtime.getStatus());
-            tableModel.addRow(row);
-        }
-    }
-    
-    public Showtime getSelectedShowtime() {
+    public SuatChieu getSelectedShowtime() {
         return selectedShowtime;
     }
 }

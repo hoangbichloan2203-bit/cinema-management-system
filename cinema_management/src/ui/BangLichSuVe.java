@@ -1,41 +1,27 @@
 package ui;
 
-import dao.TicketDAO;
-import dao.ShowtimeDAO;
-import dao.FilmDAO;
-import entity.Ticket;
-import entity.Showtime;
-import entity.Film;
-import services.AuthService;
-import entity.Customer;
+import entity.Ve;
+import entity.SuatChieu;
+import entity.Phim;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Vector;
 
-public class TicketHistoryPanel extends JPanel {
+/**
+ * Giao diện Lịch Sử Vé
+ */
+public class BangLichSuVe extends JPanel {
     
-    private TicketDAO ticketDAO;
-    private ShowtimeDAO showtimeDAO;
-    private FilmDAO filmDAO;
-    private JTable ticketTable;
+    private JTable veTable;
     private DefaultTableModel tableModel;
     
-    public TicketHistoryPanel() {
-        this.ticketDAO = new TicketDAO();
-        this.showtimeDAO = new ShowtimeDAO();
-        this.filmDAO = new FilmDAO();
-        
+    public BangLichSuVe() {
         setLayout(new BorderLayout());
         setBackground(new Color(31, 32, 44));
         
         add(createHeaderPanel(), BorderLayout.NORTH);
         add(createTablePanel(), BorderLayout.CENTER);
-        
-        loadTickets();
     }
     
     private JPanel createHeaderPanel() {
@@ -58,7 +44,7 @@ public class TicketHistoryPanel extends JPanel {
         tablePanel.setBorder(new EmptyBorder(15, 20, 15, 20));
         
         tableModel = new DefaultTableModel(new Object[] {
-            "ID Vé", "Phim", "Phòng", "Ghế", "Giờ Chiếu", "Giá", "Trạng Thái", "Ngày Mua"
+            "Mã Vé", "Phim", "Phòng", "Ghế", "Giờ Chiếu", "Giá", "Trạng Thái"
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -66,145 +52,38 @@ public class TicketHistoryPanel extends JPanel {
             }
         };
         
-        ticketTable = new JTable(tableModel);
-        ticketTable.setBackground(new Color(50, 50, 60));
-        ticketTable.setForeground(Color.WHITE);
-        ticketTable.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        ticketTable.getTableHeader().setBackground(new Color(241, 121, 104));
-        ticketTable.getTableHeader().setForeground(Color.WHITE);
-        ticketTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
-        ticketTable.setRowHeight(25);
-        ticketTable.setSelectionBackground(new Color(241, 121, 104));
+        veTable = new JTable(tableModel);
+        veTable.setBackground(new Color(50, 50, 60));
+        veTable.setForeground(Color.WHITE);
+        veTable.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        veTable.getTableHeader().setBackground(new Color(241, 121, 104));
+        veTable.getTableHeader().setForeground(Color.WHITE);
+        veTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        veTable.setRowHeight(25);
+        veTable.setSelectionBackground(new Color(241, 121, 104));
         
-        ticketTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                int selectedRow = ticketTable.getSelectedRow();
-                if (selectedRow >= 0) {
-                    showTicketDetails(selectedRow);
-                }
-            }
-        });
-        
-        JScrollPane scrollPane = new JScrollPane(ticketTable);
+        JScrollPane scrollPane = new JScrollPane(veTable);
         scrollPane.setBackground(new Color(31, 32, 44));
         scrollPane.getVerticalScrollBar().setBackground(new Color(50, 50, 60));
         scrollPane.getHorizontalScrollBar().setBackground(new Color(50, 50, 60));
         
         tablePanel.add(scrollPane, BorderLayout.CENTER);
         
-        // Button panel
+        // Panel nút
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.setBackground(new Color(31, 32, 44));
         
-        JButton refreshBtn = createButton("Làm Mới");
-        refreshBtn.addActionListener(e -> loadTickets());
+        JButton lamMoiBtn = createButton("Làm Mới");
+        JButton xemChiTietBtn = createButton("Xem Chi Tiết");
+        JButton inVeBtn = createButton("In Vé");
         
-        JButton viewDetailsBtn = createButton("Xem Chi Tiết");
-        viewDetailsBtn.addActionListener(e -> {
-            int selectedRow = ticketTable.getSelectedRow();
-            if (selectedRow >= 0) {
-                showTicketDetails(selectedRow);
-            }
-        });
-        
-        JButton printBtn = createButton("In Vé");
-        printBtn.addActionListener(e -> {
-            int selectedRow = ticketTable.getSelectedRow();
-            if (selectedRow >= 0) {
-                printTicket(selectedRow);
-            }
-        });
-        
-        buttonPanel.add(refreshBtn);
-        buttonPanel.add(viewDetailsBtn);
-        buttonPanel.add(printBtn);
+        buttonPanel.add(lamMoiBtn);
+        buttonPanel.add(xemChiTietBtn);
+        buttonPanel.add(inVeBtn);
         
         tablePanel.add(buttonPanel, BorderLayout.SOUTH);
         
         return tablePanel;
-    }
-    
-    private void loadTickets() {
-        tableModel.setRowCount(0);
-        Customer currentUser = AuthService.getCurrentUser();
-        
-        if (currentUser == null) {
-            JOptionPane.showMessageDialog(this, "Bạn cần đăng nhập", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        List<Ticket> tickets = ticketDAO.getTicketsByCustomerId(currentUser.getCustomerId());
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        
-        for (Ticket ticket : tickets) {
-            Showtime showtime = showtimeDAO.getShowtimeById(ticket.getShowtimeId());
-            Film film = filmDAO.getFilmById(showtime.getFilmId());
-            
-            Vector<Object> row = new Vector<>();
-            row.add(ticket.getTicketId());
-            row.add(film.getFilmName());
-            row.add("Phòng " + showtime.getTheaterId());
-            row.add("A" + ticket.getSeatId()); // Simplified seat display
-            row.add(showtime.getStartTime().format(dateFormatter));
-            row.add(String.format("%.0f VND", ticket.getPrice()));
-            row.add(ticket.getStatus());
-            row.add(ticket.getBookingDate());
-            
-            tableModel.addRow(row);
-        }
-    }
-    
-    private void showTicketDetails(int row) {
-        int ticketId = (int) tableModel.getValueAt(row, 0);
-        Ticket ticket = ticketDAO.getTicketById(ticketId);
-        Showtime showtime = showtimeDAO.getShowtimeById(ticket.getShowtimeId());
-        Film film = filmDAO.getFilmById(showtime.getFilmId());
-        
-        StringBuilder details = new StringBuilder();
-        details.append("═════════════════════════════════════\n");
-        details.append("CHI TIẾT VÉ\n");
-        details.append("═════════════════════════════════════\n\n");
-        details.append("ID Vé: ").append(ticket.getTicketId()).append("\n");
-        details.append("Phim: ").append(film.getFilmName()).append("\n");
-        details.append("Thể Loại: ").append(film.getGenre()).append("\n");
-        details.append("Phòng: ").append(showtime.getTheaterId()).append("\n");
-        details.append("Ghế: A").append(ticket.getSeatId()).append("\n");
-        details.append("Thời Gian Chiếu: ").append(showtime.getStartTime()).append("\n");
-        details.append("Giá Vé: ").append(String.format("%.0f VND", ticket.getPrice())).append("\n");
-        details.append("Trạng Thái: ").append(ticket.getStatus()).append("\n");
-        details.append("Ngày Mua: ").append(ticket.getBookingDate()).append("\n");
-        details.append("\n═════════════════════════════════════\n");
-        details.append("Mô Tả Phim:\n").append(film.getDescription()).append("\n");
-        
-        JOptionPane.showMessageDialog(this, details.toString(), "Chi Tiết Vé", JOptionPane.INFORMATION_MESSAGE);
-    }
-    
-    private void printTicket(int row) {
-        int ticketId = (int) tableModel.getValueAt(row, 0);
-        Ticket ticket = ticketDAO.getTicketById(ticketId);
-        Showtime showtime = showtimeDAO.getShowtimeById(ticket.getShowtimeId());
-        Film film = filmDAO.getFilmById(showtime.getFilmId());
-        
-        StringBuilder printContent = new StringBuilder();
-        printContent.append("\n\n");
-        printContent.append("╔═══════════════════════════════════════╗\n");
-        printContent.append("║          RẠP CHIẾU PHIM T3L            ║\n");
-        printContent.append("║              VÉ XEM PHIM               ║\n");
-        printContent.append("╚═══════════════════════════════════════╝\n\n");
-        printContent.append("VÉ NUMBER: ").append(String.format("%08d", ticketId)).append("\n");
-        printContent.append("Phim: ").append(film.getFilmName()).append("\n");
-        printContent.append("Phòng: ").append(showtime.getTheaterId()).append(" | Ghế: A").append(ticket.getSeatId()).append("\n");
-        printContent.append("Giờ Chiếu: ").append(showtime.getStartTime()).append("\n");
-        printContent.append("Giá: ").append(String.format("%.0f VND", ticket.getPrice())).append("\n");
-        printContent.append("Trạng Thái: ").append(ticket.getStatus()).append("\n\n");
-        printContent.append("═════════════════════════════════════════\n");
-        printContent.append("Cảm ơn bạn đã lựa chọn Rạp T3L!\n");
-        printContent.append("═════════════════════════════════════════\n\n");
-        
-        // In ra console (trong thực tế sẽ in qua printer)
-        System.out.println(printContent.toString());
-        
-        JOptionPane.showMessageDialog(this, "Vé đã được in!\n(Chi tiết xem ở console)", "In Vé", JOptionPane.INFORMATION_MESSAGE);
     }
     
     private JButton createButton(String text) {
